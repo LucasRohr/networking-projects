@@ -7,6 +7,16 @@ Integra os modelos de Nyquist e Shannon com ponto de entrada em main()
 from nyquist import calcular_capacidade_nyquist, formatar_capacidade
 from shannon import calcular_capacidade_shannon, snr_db_para_linear
 
+# Importação das funções de apresentação para orquestração
+from graficos_tabelas import (
+    configurar_estilo_grafico,
+    processar_experimento_1,
+    processar_experimento_2,
+    processar_experimento_3,
+    processar_experimento_4
+)
+
+
 def executar_experimento_1() -> dict:
     """
     Experimento 1 - Capacidade de Nyquist (Canal sem ruído).
@@ -166,7 +176,7 @@ def executar_experimento_4() -> dict:
     for n in niveis:
         c_nyquist = calcular_capacidade_nyquist(banda_hz, n)
         resultados_nyquist[n] = c_nyquist
-        ultrapassou = c_nyquist > c_shannon # Verifica se a capacidade de Nyquist excede o limite de Shannon
+        ultrapassou = c_nyquist > c_shannon  # Verifica se a capacidade de Nyquist excede o limite de Shannon
 
         if ultrapassou:
             configuracoes_superadas.append((n, c_nyquist))
@@ -176,7 +186,7 @@ def executar_experimento_4() -> dict:
 
     print("\nAnálise das violações do limite de Shannon:")
     for n_val, taxa in configuracoes_superadas:
-        excesso = taxa - c_shannon # Calcula o excesso de capacidade em relação ao limite de Shannon
+        excesso = taxa - c_shannon  # Calcula o excesso de capacidade em relação ao limite de Shannon
         print(f"- Com N = {n_val}: Nyquist produz {taxa:,.2f} bit/s (excede Shannon em +{excesso:,.2f} bit/s).")
 
     return {
@@ -192,13 +202,30 @@ def executar_experimento_4() -> dict:
 
 def main():
     """
-    Ponto de entrada: executa sequencialmente todos os experimentos
+    Ponto de entrada: executa sequencialmente todos os experimentos.
+    Pipeline completo: executa os cálculos e aciona diretamente a geração de tabelas e gráficos com os dados retornados.
     """
     print("### INÍCIO DA EXECUÇÃO DOS EXPERIMENTOS DE CAPACIDADE DE CANAL ###")
-    executar_experimento_1()
-    executar_experimento_2()
-    executar_experimento_3()
-    executar_experimento_4()
+
+    # Aplica estilo visual padronizado antes da renderização dos gráficos
+    configurar_estilo_grafico()
+
+    # Execução do Experimento 1 com passagem direta de dados para visualização
+    dados_exp1 = executar_experimento_1()
+    processar_experimento_1(dados_exp1, salvar_imagem=True)
+
+    # Execução do Experimento 2 com passagem direta de dados para visualização
+    dados_exp2 = executar_experimento_2()
+    processar_experimento_2(dados_exp2, salvar_imagem=True)
+
+    # Execução do Experimento 3 com passagem direta de dados para visualização
+    dados_exp3 = executar_experimento_3()
+    processar_experimento_3(dados_exp3, salvar_imagem=True)
+
+    # Execução do Experimento 4 com passagem direta de dados para visualização
+    dados_exp4 = executar_experimento_4()
+    processar_experimento_4(dados_exp4, salvar_imagem=True)
+
     print("\n" + "=" * 65)
     print("### TODOS OS EXPERIMENTOS FORAM CONCLUÍDOS COM SUCESSO ###\n")
 
